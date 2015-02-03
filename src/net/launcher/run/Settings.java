@@ -10,19 +10,18 @@ public class Settings {
     public static final String title = "Launcher"; //Заголовок лаунчера
     public static final String titleInGame = "Minecraft"; //Заголовок лаунчера после авторизации
     public static final String basedir = "AppData"; //Родительская папка для Minecraft (только для Windows) [ProgramFiles, AppData]
-    public static final String baseconf = "voxelaria"; //Папка с файлом конфигурации
-    public static final String pathconst = "voxelaria/%SERVERNAME%"; //Конструктор пути к папке с MC
+    public static final String baseconf = ".allexus"; //Папка с файлом конфигурации
+    public static final String pathconst = ".allexus/%SERVERNAME%"; //Конструктор пути к папке с MC
     public static final String skins = "MinecraftSkins/"; //Папка скинов
     public static final String cloaks = "MinecraftCloaks/"; //Папка плащей
 
     /**
      * Параметры подключения
      */
-    public static final String domain = "alexandrage.ru";//Домен сайта
-    public static final String siteDir = "site";//Папка с файлами лаунчера на сайте
+    public static final String domain = "mc.allexus.tk";//Домен сайта
+    public static final String siteDir = "launcher";//Папка с файлами лаунчера на сайте
     public static final String updateFile = "https://alexandrage.ru/site/launcher/fix";//Ссылка на обновления лаунчера. Не писать на конце ".exe .jar"!
     public static final String buyVauncherLink = "http://plati.ru/"; //Ссылка на страницу покупки ваучеров
-    public static final String iMusicname = "001.mp3";
     public static final String[] p = {"wireshark", "cheat"};  //Список запрещенных процессов.
     public static final String http = "http://";   //Протокол подключения https:// если есть ssl сертификат
 
@@ -45,10 +44,8 @@ public class Settings {
      * Настройки структуры лаунчера
      */
     public static boolean useAutoenter = false;  //Использовать функцию автозахода на выбранный сервер
-    public static boolean useRegister = true;   //Использовать Регистрацию в лаунчере
     public static boolean useMulticlient = true;   //Использовать функцию "по клиенту на сервер"
     public static boolean useStandartWB = true;   //Использовать стандартный браузер для открытия ссылок
-    public static boolean usePersonal = true;   //Использовать Личный кабинет
     public static boolean customframe = true;   //Использовать кастомный фрейм
     public static boolean useConsoleHider = false;  //Использовать скрытие консоли клиента
     public static boolean useModCheckerTimer = true;   //Перепроверка jar через 30 секунд

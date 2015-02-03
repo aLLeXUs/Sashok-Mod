@@ -20,8 +20,6 @@ import net.launcher.utils.UpdaterThread;
 import static net.launcher.components.Files.*;
 import static net.launcher.theme.LoginTheme.*;
 import static net.launcher.theme.OptionsTheme.*;
-import static net.launcher.theme.RegTheme.*;
-import static net.launcher.theme.PersonalTheme.*;
 import static net.launcher.theme.UpdaterTheme.*;
 import static net.launcher.utils.ImageUtils.*;
 
@@ -30,7 +28,6 @@ public class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public static BufferedImage background = BaseUtils.getLocalImage("background");
-    public static BufferedImage background_personal = BaseUtils.getLocalImage("background_personal");
     public static BufferedImage background_dialog = BaseUtils.getLocalImage("background_dialog");
     public static BufferedImage background_download = BaseUtils.getLocalImage("background_download");
     public static BufferedImage bar = BaseUtils.getLocalImage("bar");
@@ -135,91 +132,6 @@ public class Panel extends JPanel {
             g.drawString("Настройки", titleX, titleY);
             g.setFont(g.getFont().deriveFont(fontbasesize));
             g.drawString("Память (в мегабайтах):", memory.x, memory.y - 5);
-        } else if (type == 55) {
-            g.drawImage(tmpImage, 0, 0, getWidth(), getHeight(), null);
-            g.drawImage(genPanel(panelOpt.w, panelOpt.h, extpanel), panelOpt.x, panelOpt.y, panelOpt.w, panelOpt.h, null);
-            g.setFont(g.getFont().deriveFont(fonttitlesize));
-            g.setColor(OptionsTheme.memory.textColor);
-            g.drawString("Регистрация", titleX, titleY);
-
-            /**
-             * ************************************************************
-             */
-            g.setFont(g.getFont().deriveFont(fontbasesize));
-            String textloginReg1 = "Ник:";
-            g.drawString(textloginReg1, textloginReg.x - (g.getFontMetrics().stringWidth(textloginReg1)), textloginReg.y + 18);
-            String textpasswordReg1 = "Пароль:";
-            g.drawString(textpasswordReg1, textpasswordReg.x - (g.getFontMetrics().stringWidth(textpasswordReg1)), textpasswordReg.y + 18);
-            String textpassword2Reg1 = "Повторите пароль:";
-            g.drawString(textpassword2Reg1, textpassword2Reg.x - (g.getFontMetrics().stringWidth(textpassword2Reg1)), textpassword2Reg.y + 18);
-            String textmailReg1 = "E-mail:";
-            g.drawString(textmailReg1, textmailReg.x - (g.getFontMetrics().stringWidth(textmailReg1)), textmailReg.y + 18);
-        } else if (type == 6) {
-            g.drawImage(background_personal, 0, 0, getWidth(), getHeight(), null);
-            g.drawImage(pc.skin, skinX, skinY, 128, 256, null);
-            g.drawImage(pc.cloak, cloakX, cloakY, 80, 128, null);
-
-            String ugroupLBL = pc.ugroup.equals("User") ? "Игрок" : pc.ugroup.equals("VIP") ? "VIP игрок" : pc.ugroup.equals("Banned") ? "Забаненый" : "Премиум игрок";
-            g.setColor(ugroup.color);
-            g.setFont(BaseUtils.getFont(ugroup.fontName, ugroup.fontSize));
-            g.drawString(ugroupLBL, ugroup.x + (ugroup.w / 2 - g.getFontMetrics().stringWidth(ugroupLBL) / 2), ugroup.y + g.getFontMetrics().getHeight());
-
-            if (pc.canUploadCloak) {
-                g.setColor(cloakPrice.color);
-                g.setFont(BaseUtils.getFont(cloakPrice.fontName, cloakPrice.fontSize));
-
-                String cloakPriceSTR = pc.cloakPrice + " рублей";
-
-                g.drawString(cloakPriceSTR, cloakPrice.x - g.getFontMetrics().stringWidth(cloakPriceSTR), cloakPrice.y + g.getFontMetrics().getHeight());
-            }
-
-            String iconmoney = pc.iconmoney + " монет";
-            g.setColor(iConomy.color);
-            g.setFont(BaseUtils.getFont(iConomy.fontName, iConomy.fontSize));
-            g.drawString(iconmoney, iConomy.x - g.getFontMetrics().stringWidth(iconmoney), iConomy.y + g.getFontMetrics().getHeight());
-
-            String realmoneySTR = pc.realmoney + " рублей";
-            g.setColor(realmoney.color);
-            g.setFont(BaseUtils.getFont(realmoney.fontName, realmoney.fontSize));
-            g.drawString(realmoneySTR, realmoney.x - g.getFontMetrics().stringWidth(realmoneySTR), realmoney.y + g.getFontMetrics().getHeight());
-
-            g.setColor(prices.color);
-            g.setFont(BaseUtils.getFont(prices.fontName, prices.fontSize));
-
-            int j = 0;
-            if (pc.canBuyVip) {
-                g.drawString("Цена VIP: " + pc.vipPrice + " рублей", prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-            }
-
-            if (pc.canBuyPremium) {
-                g.drawString("Цена Premium: " + pc.premiumPrice + " рублей", prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-            }
-
-            if (pc.canBuyUnban) {
-                g.drawString("Цена разбана: " + pc.unbanPrice + " рублей", prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-            }
-
-            if (pc.canExchangeMoney) {
-                g.drawString("Курс обмена: 1 рубль = " + pc.exchangeRate + " монет", prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-            }
-
-            if (!pc.dateofexpire.contains("01.01.1970")) {
-                g.drawString("Дата истечения : " + pc.dateofexpire, prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-            }
-
-            if (pc.jobexp != -1 && pc.joblvl != -1) {
-                g.drawString("Профессия: " + pc.jobname, prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-                g.drawString("Уровень: " + pc.joblvl, prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-                g.drawString("Опыт: " + pc.jobexp, prices.x, prices.y + g.getFontMetrics().getHeight() * (j + 1));
-                j++;
-            }
         } else if (type == 7) {
             g.setFont(g.getFont().deriveFont(fonttitlesize));
             g.drawImage(background_dialog, 0, 0, getWidth(), getHeight(), null);
@@ -285,23 +197,6 @@ public class Panel extends JPanel {
         timer.start();
     }
 
-    public void setRegister(BufferedImage screen) {
-        reset();
-        tmpImage = screen;
-        type = 55;
-        timer = new Timer(50, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                tindex++;
-                if (tindex > 10) {
-                    timer.stop();
-                }
-                tmpImage.getGraphics().drawImage(getByIndex(colors, 1, 0), 0, dragger.h, getWidth(), getHeight() - dragger.h, null);
-                repaint();
-            }
-        });
-        timer.start();
-    }
-
     public void setOptions(BufferedImage screen) {
         reset();
         tmpImage = screen;
@@ -317,12 +212,6 @@ public class Panel extends JPanel {
             }
         });
         timer.start();
-    }
-
-    public void setPersonalState(PersonalContainer pc) {
-        reset();
-        this.pc = pc;
-        type = 6;
     }
 
     public void setLoadingState(BufferedImage screen, String s) {

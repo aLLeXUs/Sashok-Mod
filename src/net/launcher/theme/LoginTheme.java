@@ -23,9 +23,7 @@ public class LoginTheme {
     public static ButtonStyle toAuth = new ButtonStyle(420, 436, 140, 40, "font", "button", 16F, Color.RED, true, Align.CENTER);
     public static ButtonStyle toLogout = new ButtonStyle(215, 436, 195, 40, "font", "button", 16F, Color.RED, true, Align.CENTER);
     public static ButtonStyle toGame = new ButtonStyle(420, 436, 140, 40, "font", "button", 16F, Color.GREEN, true, Align.CENTER);
-    public static ButtonStyle toPersonal = new ButtonStyle(570, 436, 140, 40, "font", "button", 16F, Color.GREEN, true, Align.CENTER);
     public static ButtonStyle toOptions = new ButtonStyle(714, 436, 130, 40, "font", "button", 16F, Color.YELLOW, true, Align.CENTER);
-    public static ButtonStyle toRegister = new ButtonStyle(570, 436, 140, 40, "font", "button", 16F, Color.YELLOW, true, Align.CENTER);
 
     public static TextfieldStyle login = new TextfieldStyle(10, 440, 195, 36, "textfield", "font", 16F, Color.WHITE, Color.DARK_GRAY, new EmptyBorder(0, 10, 0, 10));
     public static PassfieldStyle password = new PassfieldStyle(215, 440, 195, 36, "textfield", "font", 16F, Color.WHITE, Color.DARK_GRAY, "*", new EmptyBorder(0, 10, 0, 10));

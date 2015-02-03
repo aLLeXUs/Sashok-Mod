@@ -47,9 +47,7 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
     public static Button toGame = new Button("Играть");
     public static Button toAuth = new Button("Авторизация");
     public static Button toLogout = new Button("Выход");
-    public static Button toPersonal = new Button("Войти в ЛК");
     public Button toOptions = new Button("Настройки");
-    public static Button toRegister = new Button("Регистрация");
     public JTextPane browser = new JTextPane();
     public JTextPane personalBrowser = new JTextPane();
     public JScrollPane bpane = new JScrollPane(browser);
@@ -74,27 +72,7 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
     public Checkbox fullscreen = new Checkbox("Запустить в полный экран");
     public Textfield memory = new Textfield();
 
-    public Textfield loginReg = new Textfield();
-    public Passfield passwordReg = new Passfield();
-    public Passfield password2Reg = new Passfield();
-    public Textfield mailReg = new Textfield();
-    public Button okreg = new Button("Регистрация");
-    public Button closereg = new Button("Отмена");
-
     public Button options_close = new Button("Закрыть");
-
-    public Button buyCloak = new Button("Купить плащ");
-    public Button changeSkin = new Button("Сменить скин");
-    public Textfield vaucher = new Textfield();
-    public Button vaucherButton = new Button("Пополнить");
-    public Button buyVaucher = new Button("Купить");
-    public Textfield exchangeFrom = new Textfield();
-    public Textfield exchangeTo = new Textfield();
-    public Button exchangeButton = new Button("Обменять");
-    public Button buyVip = new Button(BaseUtils.empty);
-    public Button buyPremium = new Button(BaseUtils.empty);
-    public Button buyUnban = new Button("Купить разбан");
-    public Button toGamePersonal = new Button("В игру");
 
     public Frame() {
         try {
@@ -140,16 +118,11 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         toGame.addActionListener(this);
         toAuth.addActionListener(this);
         toLogout.addActionListener(this);
-        toPersonal.addActionListener(this);
-        toPersonal.setVisible(Settings.usePersonal);
         toOptions.addActionListener(this);
-        toRegister.addActionListener(this);
         login.setText("Логин...");
         login.addActionListener(this);
         login.addFocusListener(this);
         password.setEchoChar('*');
-        passwordReg.setEchoChar('*');
-        password2Reg.setEchoChar('*');
         password.addActionListener(this);
         password.addFocusListener(this);
         String pass = getPropertyString("password");
@@ -160,10 +133,8 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         login.setVisible(true);
         password.setVisible(b1);
         toGame.setVisible(b2);
-        toPersonal.setVisible(b2 && Settings.usePersonal);
         toAuth.setVisible(b1);
         toLogout.setVisible(b2);
-        toRegister.setVisible(Settings.useRegister && b1);
         if (toGame.isVisible()) {
             token = "token";
         }
@@ -236,46 +207,11 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         });
 
         options_close.addActionListener(this);
-        closereg.addActionListener(this);
-        okreg.addActionListener(this);
         loadnews.addActionListener(this);
         fullscreen.addActionListener(this);
 
-        buyCloak.addActionListener(this);
-        changeSkin.addActionListener(this);
-        vaucherButton.addActionListener(this);
-        buyVaucher.addActionListener(this);
-        exchangeButton.addActionListener(this);
-        buyVip.addActionListener(this);
-        buyPremium.addActionListener(this);
-        buyUnban.addActionListener(this);
-        toGamePersonal.addActionListener(this);
-
         login.setText(getPropertyString("login"));
         servers.setSelectedIndex(getPropertyInt("server"));
-
-        exchangeFrom.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                warn();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                warn();
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                warn();
-            }
-
-            public void warn() {
-                try {
-                    int i = Integer.parseInt(exchangeFrom.getText());
-                    exchangeTo.setText(String.valueOf((long) i * (long) panel.pc.exchangeRate) + " Монет");
-                } catch (Exception e) {
-                    exchangeTo.setText("<N/A>");
-                }
-            }
-        });
 
         addAuthComp();
         addFrameComp();
@@ -317,9 +253,7 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         panel.add(toGame);
         panel.add(toAuth);
         panel.add(toLogout);
-        panel.add(toPersonal);
         panel.add(toOptions);
-        panel.add(toRegister);
         panel.add(login);
         panel.add(bpane);
         panel.add(password);
@@ -417,19 +351,13 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
             setProperty("password", "-");
             password.setVisible(true);
             toGame.setVisible(false);
-            toPersonal.setVisible(false);
             toAuth.setVisible(true);
             toLogout.setVisible(false);
-            toRegister.setVisible(Settings.useRegister && true);
             token = "null";
             login.setEditable(true);
         }
 
-        if (e.getSource() == login || e.getSource() == password || e.getSource() == toGame || e.getSource() == toAuth || e.getSource() == toPersonal || e.getSource() == toGamePersonal) {
-            boolean personal = false;
-            if (e.getSource() == toPersonal) {
-                personal = true;
-            }
+        if (e.getSource() == login || e.getSource() == password || e.getSource() == toGame || e.getSource() == toAuth) {
             setProperty("login", login.getText());
             setProperty("server", servers.getSelectedIndex());
             panel.remove(hide);
@@ -438,15 +366,11 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
             panel.removeAll();
             addFrameComp();
             panel.setAuthState(screen);
-            ThreadUtils.auth(personal);
+            ThreadUtils.auth();
         }
 
         if (e.getSource() == toOptions) {
             setOptions();
-        }
-
-        if (e.getSource() == toRegister) {
-            setRegister();
         }
 
         if (e.getSource() == options_close) {
@@ -464,66 +388,6 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         if (e.getSource() == fullscreen || e.getSource() == loadnews) {
             setProperty("fullscreen", fullscreen.isSelected());
             setProperty("loadnews", loadnews.isSelected());
-        }
-
-        if (e.getSource() == buyCloak) {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new SkinFilter(1));
-            chooser.setAcceptAllFileFilterUsed(false);
-            int i = chooser.showDialog(main, "Купить");
-
-            if (i == JFileChooser.APPROVE_OPTION) {
-                setLoading();
-                ThreadUtils.upload(chooser.getSelectedFile(), 1);
-            }
-        }
-
-        if (e.getSource() == changeSkin) {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new SkinFilter(0));
-            chooser.setAcceptAllFileFilterUsed(false);
-            int i = chooser.showDialog(main, "Сменить");
-
-            if (i == JFileChooser.APPROVE_OPTION) {
-                setLoading();
-                ThreadUtils.upload(chooser.getSelectedFile(), 0);
-            }
-        }
-
-        if (e.getSource() == vaucherButton) {
-            setLoading();
-            ThreadUtils.vaucher(vaucher.getText());
-        }
-
-        if (e.getSource() == okreg) {
-            setLoading();
-            ThreadUtils.register(loginReg.getText(), passwordReg.getText(), password2Reg.getText(), mailReg.getText());
-        }
-        if (e.getSource() == closereg) {
-            setAuthComp();
-        }
-        if (e.getSource() == buyVaucher) {
-            openURL(Settings.buyVauncherLink);
-        }
-
-        if (e.getSource() == exchangeButton) {
-            setLoading();
-            ThreadUtils.exchange(exchangeFrom.getText());
-        }
-
-        if (e.getSource() == buyVip) {
-            setLoading();
-            ThreadUtils.buyVip(0);
-        }
-
-        if (e.getSource() == buyPremium) {
-            setLoading();
-            ThreadUtils.buyVip(1);
-        }
-
-        if (e.getSource() == buyUnban) {
-            setLoading();
-            ThreadUtils.unban();
         }
     }
 
@@ -556,25 +420,6 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         repaint();
     }
 
-    public void setRegister() {
-        panel.remove(hide);
-        panel.remove(close);
-        BufferedImage screen = ImageUtils.sceenComponent(panel);
-        panel.removeAll();
-        addFrameComp();
-        panel.setRegister(screen);
-
-        panel.add(loginReg);
-        panel.add(passwordReg);
-        panel.add(password2Reg);
-        panel.add(mailReg);
-
-        panel.add(okreg);
-        panel.add(closereg);
-
-        repaint();
-    }
-
     public void setOptions() {
         panel.remove(hide);
         panel.remove(close);
@@ -588,66 +433,6 @@ public class Frame extends JFrame implements ActionListener, FocusListener {
         panel.add(fullscreen);
         panel.add(memory);
         panel.add(options_close);
-        repaint();
-    }
-
-    public void setPersonal(PersonalContainer pc) {
-        panel.removeAll();
-        addFrameComp();
-
-        if (pc.canUploadCloak) {
-            panel.add(buyCloak);
-        }
-        if (pc.canUploadSkin) {
-            panel.add(changeSkin);
-        }
-        if (pc.canActivateVaucher) {
-            panel.add(vaucher);
-            panel.add(vaucherButton);
-            panel.add(buyVaucher);
-        }
-
-        if (pc.canExchangeMoney) {
-            panel.add(exchangeFrom);
-            panel.add(exchangeTo);
-            panel.add(exchangeButton);
-        }
-
-        if (pc.canBuyVip) {
-            panel.add(buyVip);
-        }
-        if (pc.canBuyPremium) {
-            panel.add(buyPremium);
-        }
-
-        if (pc.canBuyUnban) {
-            panel.add(buyUnban);
-        }
-
-        buyVip.setText("Купить VIP");
-        buyVip.setEnabled(true);
-
-        buyPremium.setText("Купить Premium");
-        buyPremium.setEnabled(true);
-
-        if (pc.ugroup.equals("Banned")) {
-            buyPremium.setEnabled(false);
-            buyVip.setEnabled(false);
-        } else if (pc.ugroup.equals("VIP")) {
-            buyVip.setText("Продлить VIP");
-            buyPremium.setEnabled(false);
-            buyUnban.setEnabled(false);
-        } else if (pc.ugroup.equals("Premium")) {
-            buyPremium.setText("Продлить Premium");
-            buyVip.setEnabled(false);
-            buyUnban.setEnabled(false);
-        } else if (pc.ugroup.equals("User")) {
-            buyUnban.setEnabled(false);
-        }
-
-        panel.add(toGamePersonal);
-
-        panel.setPersonalState(pc);
         repaint();
     }
 

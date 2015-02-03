@@ -8,8 +8,6 @@ import net.launcher.components.LinkLabel;
 import net.launcher.run.Settings;
 import static net.launcher.theme.LoginTheme.*;
 import static net.launcher.theme.OptionsTheme.*;
-import static net.launcher.theme.RegTheme.*;
-import static net.launcher.theme.PersonalTheme.*;
 
 public class ThemeUtils extends BaseUtils {
 
@@ -27,8 +25,6 @@ public class ThemeUtils extends BaseUtils {
         toGame.apply(Frame.toGame);
         toAuth.apply(Frame.toAuth);
         toLogout.apply(Frame.toLogout);
-        toPersonal.apply(Frame.toPersonal);
-        toRegister.apply(Frame.toRegister);
         toOptions.apply(main.toOptions);
         login.apply(Frame.login);
         password.apply(Frame.password);
@@ -42,26 +38,6 @@ public class ThemeUtils extends BaseUtils {
         fullscrn.apply(main.fullscreen);
         memory.apply(main.memory);
         close.apply(main.options_close);
-
-        closereg.apply(main.closereg);
-        loginReg.apply(main.loginReg);
-        passwordReg.apply(main.passwordReg);
-        password2Reg.apply(main.password2Reg);
-        mailReg.apply(main.mailReg);
-        okreg.apply(main.okreg);
-
-        buyCloak.apply(main.buyCloak);
-        changeskin.apply(main.changeSkin);
-        buyVip.apply(main.buyVip);
-        buyPremium.apply(main.buyPremium);
-        buyUnban.apply(main.buyUnban);
-        vaucher.apply(main.vaucher);
-        vaucherButton.apply(main.vaucherButton);
-        buyVaucher.apply(main.buyVaucher);
-        exchangeFrom.apply(main.exchangeFrom);
-        exchangeTo.apply(main.exchangeTo);
-        exchangeBtn.apply(main.exchangeButton);
-        toGamePSL.apply(main.toGamePersonal);
 
         update_no.apply(main.update_no);
         update_exe.apply(main.update_exe);
