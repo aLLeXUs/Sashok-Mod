@@ -10,7 +10,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JButton;
-import net.launcher.MusPlay;
 import net.launcher.run.Settings;
 
 public class Dragbutton extends JButton implements MouseListener, MouseMotionListener {
@@ -52,10 +51,6 @@ public class Dragbutton extends JButton implements MouseListener, MouseMotionLis
         }
         if ((this.pressed) && (this.entered)) {
             this.entered = false;
-            try {
-                new MusPlay("click.mp3");
-            } catch (Exception e) {
-            }
             g.drawImage(img3, 0, 0, getWidth(), getHeight(), null);
             this.pressed = false;
         }

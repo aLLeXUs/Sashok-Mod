@@ -9,7 +9,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
-import net.launcher.MusPlay;
 import net.launcher.run.Settings;
 import net.launcher.utils.BaseUtils;
 import static net.launcher.utils.ImageUtils.*;
@@ -99,10 +98,6 @@ public class Combobox extends JComponent implements MouseListener, MouseMotionLi
         if (pressed && y / pressedTX.getHeight() < elements.length) {
             selected = y / pressedTX.getHeight();
             entered = BaseUtils.contains(x, y, getX(), getY(), getWidth(), getHeight());
-        }
-        try {
-            new MusPlay("click.mp3");
-        } catch (Exception e1) {
         }
         pressed = !pressed;
         repaint();
