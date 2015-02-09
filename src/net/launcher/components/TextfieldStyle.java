@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import javax.swing.border.Border;
+import javax.swing.SwingConstants;
 
 import net.launcher.utils.BaseUtils;
 
@@ -17,10 +18,11 @@ public class TextfieldStyle {
     public float fontSize = 1F;
     public Color textColor;
     public Color caretColor;
+    public Align align;
     public BufferedImage texture;
     public Border border;
 
-    public TextfieldStyle(int x, int y, int w, int h, String texture, String fontName, float fontSize, Color textColor, Color caretColor, Border border) {
+    public TextfieldStyle(int x, int y, int w, int h, String texture, String fontName, float fontSize, Color textColor, Color caretColor, Align align, Border border) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -29,6 +31,7 @@ public class TextfieldStyle {
         this.fontSize = fontSize;
         this.textColor = textColor;
         this.caretColor = caretColor;
+        this.align = align;
         this.texture = BaseUtils.getLocalImage(texture);
         this.border = border;
     }
@@ -41,5 +44,6 @@ public class TextfieldStyle {
         text.setBackground(textColor);
         text.setForeground(textColor);
         text.setBorder(border);
+        text.setHorizontalAlignment(align == Align.LEFT ? SwingConstants.LEFT : align == Align.CENTER ? SwingConstants.CENTER : SwingConstants.RIGHT);
     }
 }

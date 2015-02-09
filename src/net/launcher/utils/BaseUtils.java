@@ -494,7 +494,7 @@ public class BaseUtils {
                 if (args[4].equals(args[5])) {
                     return "Сервер переполнен (Всего слотов: " + args[4] + ")";
                 }
-                return "На сервере " + args[4] + " из " + args[5] + " игроков";
+                return "На сервере " + args[4] + "/" + args[5] + " игроков";
             }
         } else if (servtype == 2) {
 
@@ -506,7 +506,7 @@ public class BaseUtils {
                 if (args[i - 2].equals(args[i - 1])) {
                     return "Сервер переполнен (Всего слотов: " + args[i - 1] + ")";
                 }
-                return "На сервере " + args[i - 2] + " из " + args[i - 1] + " игроков";
+                return "На сервере " + args[i - 2] + "/" + args[i - 1] + " игроков";
             }
         }
         return "Ошибка получения информации";

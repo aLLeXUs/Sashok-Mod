@@ -22,6 +22,7 @@ import static net.launcher.theme.LoginTheme.*;
 import static net.launcher.theme.OptionsTheme.*;
 import static net.launcher.theme.UpdaterTheme.*;
 import static net.launcher.utils.ImageUtils.*;
+import net.launcher.utils.ThemeUtils;
 
 public class Panel extends JPanel {
 
@@ -59,6 +60,9 @@ public class Panel extends JPanel {
             g.setColor(tmpColor);
         } catch (Exception e) {
         }
+        g.setFont(ThemeUtils.Font.font);
+        g.setColor(ThemeUtils.Font.color);
+        
         if (type == 0) {
             g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
         } else if (type == 1) {
@@ -101,9 +105,6 @@ public class Panel extends JPanel {
                 leftTime = (int) ((t.totalsize - t.currentsize) / (t.downloadspeed * 100));
             } catch (Exception e) {
             }
-
-            g.setFont(updaterDesc.font);
-            g.setColor(updaterDesc.color);
 
             g.drawString("Текущий файл: " + t.currentfile, stringsX, stringsY);
             g.drawString("Всего: " + t.totalsize + " байт", stringsX, stringsY + 20);

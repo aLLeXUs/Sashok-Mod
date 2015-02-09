@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import javax.swing.border.Border;
+import javax.swing.SwingConstants;
 
 import net.launcher.utils.BaseUtils;
 
@@ -18,10 +19,11 @@ public class PassfieldStyle {
     public float fontSize = 1F;
     public Color textColor;
     public Color caretColor;
+    public Align align;
     public BufferedImage texture;
     public Border border;
 
-    public PassfieldStyle(int x, int y, int w, int h, String texture, String fontName, float fontSize, Color textColor, Color caretColor, String echoChar, Border border) {
+    public PassfieldStyle(int x, int y, int w, int h, String texture, String fontName, float fontSize, Color textColor, Color caretColor, String echoChar, Align align, Border border) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -31,6 +33,7 @@ public class PassfieldStyle {
         this.textColor = textColor;
         this.caretColor = caretColor;
         this.echoChar = echoChar;
+        this.align = align;
         this.texture = BaseUtils.getLocalImage(texture);
         this.border = border;
     }
@@ -43,5 +46,6 @@ public class PassfieldStyle {
         pass.setBackground(textColor);
         pass.setForeground(textColor);
         pass.setBorder(border);
+        pass.setHorizontalAlignment(align == Align.LEFT ? SwingConstants.LEFT : align == Align.CENTER ? SwingConstants.CENTER : SwingConstants.RIGHT);
     }
 }

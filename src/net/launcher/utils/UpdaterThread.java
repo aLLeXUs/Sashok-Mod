@@ -79,7 +79,7 @@ public class UpdaterThread extends Thread {
                 fos.close();
                 BaseUtils.send("File downloaded: " + currentfile);
             }
-            state = "Закачка завершена";
+            state = "Распаковка файлов...";
 
             if (zipupdate) {
                 String path = BaseUtils.getMcDir().getAbsolutePath() + File.separator;

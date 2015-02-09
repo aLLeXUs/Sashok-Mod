@@ -19,8 +19,8 @@ public class OptionsTheme {
     public static CheckboxStyle cleandir = new CheckboxStyle(250, 200, 300, 23, "font", "checkbox", 16F, Color.DARK_GRAY, true);
     public static CheckboxStyle fullscrn = new CheckboxStyle(250, 225, 300, 23, "font", "checkbox", 16F, Color.DARK_GRAY, true);
     public static CheckboxStyle offline = new CheckboxStyle(250, 250, 300, 23, "font", "checkbox", 16F, Color.DARK_GRAY, true);
-    public static TextfieldStyle memory = new TextfieldStyle(235, 364, 250, 36, "textfield", "font", 16F, Color.DARK_GRAY, Color.WHITE, new EmptyBorder(0, 10, 0, 10));
-    public static ButtonStyle close = new ButtonStyle(500, 360, 120, 40, "font", "button", 16F, Color.RED, true, Align.CENTER);
+    public static TextfieldStyle memory = new TextfieldStyle(235, 364, 250, 36, "textfield", "font", 16F, Color.DARK_GRAY, Color.WHITE, Align.LEFT, new EmptyBorder(0, 10, 0, 10));
+    public static ButtonStyle close = new ButtonStyle(500, 360, 120, 40, "font", "button", 16F, Color.ORANGE, true, Align.CENTER);
 
     public static FontBundle memoryDesc = new FontBundle("font", 16F, Color.DARK_GRAY);
 
