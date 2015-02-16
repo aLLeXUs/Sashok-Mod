@@ -4,7 +4,7 @@ include("connect.php");
 @$get = $_GET['user'];
 list($md5) = explode('?', $get);
 
-$stmt = $db->prepare("SELECT user,md5 FROM usersession WHERE md5= :md5");
+$stmt = $db->prepare("SELECT user,md5 FROM lnch_usersession WHERE md5= :md5");
 $stmt->bindValue(':md5', $md5);
 $stmt->execute();
 $stmt->bindColumn('user', $realUser);

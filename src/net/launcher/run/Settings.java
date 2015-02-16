@@ -16,8 +16,8 @@ public class Settings {
     /**
      * Параметры подключения
      */
-    public static final String domain = "mc.allexus.tk";//Домен сайта
-    public static final String siteDir = "launcher";//Папка с файлами лаунчера на сайте
+    public static final String domain = "localhost/mine";//Домен сайта
+    public static final String siteDir = "site";//Папка с файлами лаунчера на сайте
     public static final String updateFile = "http://mc.allexus.tk/launcher/launcher/aLLeXUs-Launcher";//Ссылка на обновления лаунчера. Не писать на конце ".exe .jar"!
     public static final String[] p = {"wireshark", "cheat"};  //Список запрещенных процессов.
     public static final String http = "http://";   //Протокол подключения https:// если есть ssl сертификат
@@ -40,7 +40,7 @@ public class Settings {
     /**
      * Настройки структуры лаунчера
      */
-    public static boolean useAutoenter = false;  //Использовать функцию автозахода на выбранный сервер
+    public static boolean useAutoenter = true;  //Использовать функцию автозахода на выбранный сервер
     public static boolean useMulticlient = true;   //Использовать функцию "по клиенту на сервер"
     public static boolean useStandartWB = true;   //Использовать стандартный браузер для открытия ссылок
     public static boolean customframe = false;   //Использовать кастомный фрейм

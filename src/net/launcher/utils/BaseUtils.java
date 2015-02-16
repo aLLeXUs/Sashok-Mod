@@ -589,7 +589,7 @@ public class BaseUtils {
         }
 
         try {
-            Class< ?> c = cl.loadClass("net.minecraft.client.Minecraft");
+            Class<?> c = cl.loadClass("net.minecraft.client.Minecraft");
 
             send("Changing client dir...");
 

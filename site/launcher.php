@@ -9,9 +9,6 @@
     @$x = str_replace(" ", "+", $x);
     @$yd = Security::decrypt($x, $key2);
     @list($action, $client, $login, $postPass, $launchermd5, $ctoken) = explode(':', $yd);
-
-	if(!file_exists($uploaddirs)) die ("Путь к скинам не является папкой! Укажите в настройках правильный путь.");
-	if(!file_exists($uploaddirp)) die ("Путь к плащам не является папкой! Укажите в настройках правильный путь.");
 	
 	try {
 		
@@ -67,23 +64,23 @@
 		$ip  = getenv('REMOTE_ADDR');	
 		$time = time();
 		$bantime = $time+(10);
-		$stmt = $db->prepare("Select sip,time From sip Where sip='$ip' And time>'$time'");
+		$stmt = $db->prepare("SELECT sip,time FROM lnch_sip WHERE sip='$ip' AND time>'$time'");
 		$stmt->execute();
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		$real = $row['sip'];
 		if($ip == $real) {
-			$stmt = $db->prepare("DELETE FROM sip WHERE time < '$time';");
+			$stmt = $db->prepare("DELETE FROM lnch_sip WHERE time < '$time';");
 			$stmt->execute();
 			exit(Security::encrypt("temp<$>", $key1));
 		}
 		
 		if ($login !== $realUser) {
-			$stmt = $db->prepare("INSERT INTO sip (sip, time)VALUES ('$ip', '$bantime')");
+			$stmt = $db->prepare("INSERT INTO lnch_sip (sip, time) VALUES ('$ip', '$bantime')");
 			$stmt->execute();
 			exit(Security::encrypt("errorLogin<$>", $key1));
 		}
 		if(!strcmp($realPass,$checkPass) == 0 || !$realPass) {
-			$stmt = $db->prepare("INSERT INTO sip (sip, time)VALUES ('$ip', '$bantime')");
+			$stmt = $db->prepare("INSERT INTO lnch_sip (sip, time) VALUES ('$ip', '$bantime')");
 			$stmt->execute();
 			exit(Security::encrypt("errorLogin<$>", $key1));
 		}
@@ -100,7 +97,7 @@
          	$acesstoken = $postPass;
         }
 		$sessid = token();
-        $stmt = $db->prepare("SELECT id, user, token FROM usersession WHERE user= :login");
+        $stmt = $db->prepare("SELECT id, user, token FROM lnch_usersession WHERE user= :login");
 		$stmt->bindValue(':login', $login);
 		$stmt->execute();
 		$rU = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -116,17 +113,17 @@
 	    }
 		if($login == $rU['user']) {
             if($ctoken == "null") {
-				$stmt = $db->prepare("UPDATE usersession SET session = '$sessid', token = :token WHERE user= :login");
+				$stmt = $db->prepare("UPDATE lnch_usersession SET session = '$sessid', token = :token WHERE user= :login");
 				$stmt->bindValue(':token', $acesstoken);
             }
             else {
-            	$stmt = $db->prepare("UPDATE usersession SET session = '$sessid' WHERE user= :login");
+            	$stmt = $db->prepare("UPDATE lnch_usersession SET session = '$sessid' WHERE user= :login");
             }
 			$stmt->bindValue(':login', $login);
 			$stmt->execute();
 		}
 		else if($ctoken == "null" || $login != $rU['user']) {
-			$stmt = $db->prepare("INSERT INTO usersession (user, session, md5, token) VALUES (:login, '$sessid', :md5, '$acesstoken')");
+			$stmt = $db->prepare("INSERT INTO lnch_usersession (user, session, md5, token) VALUES (:login, '$sessid', :md5, '$acesstoken')");
 			$stmt->bindValue(':login', $realUser);
 			$stmt->bindValue(':md5', str_replace('-', '', uuidConvert($realUser)));
 			$stmt->execute();
@@ -135,45 +132,22 @@
 	if($useban) {
 	    $time = time();
 	    $tipe = '2';
-		$stmt = $db->prepare("Select name From $banlist Where name= :login And type<'$tipe' And temptime>'$time'");
+		$stmt = $db->prepare("SELECT name From $banlist WHERE name= :login AND type<'$tipe' AND temptime>'$time'");
 		$stmt->bindValue(':login', $login);
 		$stmt->execute();
 	    if($stmt->rowCount()) {
-			$stmt = $db->prepare("Select name,temptime From $banlist Where name= :login And type<'$tipe' And temptime>'$time'");
+			$stmt = $db->prepare("SELECT name,temptime From $banlist WHERE name= :login AND type<'$tipe' AND temptime>'$time'");
 			$stmt->bindValue(':login', $login);
 			$stmt->execute();
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 			exit(Security::encrypt('Временный бан до '.date('d.m.Yг. H:i', $row['temptime'])." по времени сервера", $key1));
 	    }
-			$stmt = $db->prepare("Select name From $banlist Where name= :login And type<'$tipe' And temptime='0'");
+			$stmt = $db->prepare("SELECT name FROM $banlist WHERE name= :login AND type<'$tipe' AND temptime='0'");
 			$stmt->bindValue(':login', $login);
 			$stmt->execute();
 		if($stmt->rowCount()) {
 	      exit(Security::encrypt("Вечный бан", $key1));
 	    }
-	}
-	if($action == 'getpersonal' && !$usePersonal) die("Использование ЛК выключено");
-	if($action == 'uploadskin' && !$canUploadSkin) die("Функция недоступна");
-	if($action == 'uploadcloak' && !$canUploadCloak) die("Функция недоступна");
-	if($action == 'buyvip' && !$canBuyVip) die("Функция недоступна");
-	if($action == 'buypremium' && !$canBuyPremium) die("Функция недоступна");
-	if($action == 'buyunban' && !$canBuyUnban) die("Функция недоступна");
-	if($action == 'exchange' && !$canExchangeMoney) die("Функция недоступна");
-	if($action == 'activatekey' && !$canActivateVaucher) die("Функция недоступна");
-
-	if($action == 'exchange' || $action == 'getpersonal') {
-			$stmt = $db->prepare("SELECT username,balance FROM iConomy WHERE username= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$rowicon = $stmt->fetch(PDO::FETCH_ASSOC);
-			$iconregistered = true;
-		
-		if(!$rowicon['balance']) {
-			$stmt = $db->prepare("INSERT INTO `iConomy` (`username`, `balance`, `status`) VALUES (:login, '$initialIconMoney.00', '0');");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$iconregistered = false;
-		}
 	}
     
 	if($action == 'auth') {
@@ -212,294 +186,6 @@
             	str_replace("\\", "/",checkfiles('clients/'.$client.'/bin/').checkfiles('clients/'.$client.'/mods/').checkfiles('clients/'.$client.'/coremods/')).'<::>'.$client.'/bin<:b:>'.$client.'/mods<:b:>'.$client.'/coremods<:b:>', $key1);
         }
   
-	} else if($action == 'getpersonal') {
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$realmoney = $row['realmoney'];
-
-		if($iconregistered) {	
-			$stmt = $db->prepare("SELECT username,balance FROM iConomy WHERE username= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			$iconmoney = $row['balance'];
-		} else $iconmoney = "0.0";
-		
-		if($canBuyVip || $canBuyPremium) {
-			
-			$stmt = $db->prepare("SELECT name,permission,value FROM permissions WHERE name= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			$datetoexpire = 0;
-			if(!$stmt) $ugroup = 'User'; else {
-				$group = $row['permission'];
-				if($group == 'group-premium-until')
-				{
-					$ugroup = 'Premium';
-					$datetoexpire = $row['value'];
-				} else if($group == 'group-vip-until')
-				{
-					$ugroup = 'VIP';
-					$datetoexpire = $row['value'];
-				} else $ugroup = 'User';
-			}
-		} else {
-			$datetoexpire = 0;
-			$ugroup = 'User';
-		}
-	
-		if($canUseJobs) {
-			$stmt = $db->prepare("SELECT job FROM jobs WHERE username= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$sql = $stmt->fetch(PDO::FETCH_ASSOC);
-			$query = $sql['job'];
-			if($query == '') { $jobname = "Безработный"; $joblvl = 0; $jobexp = 0; } else {
-				$stmt = $db->prepare("SELECT * FROM jobs WHERE username= :login");
-				$stmt->bindValue(':login', $login);
-				$stmt->execute();
-				
-				while($data = $stmt->fetch(PDO::FETCH_ASSOC))
-				{
-					if ($data["job"] === 'Miner') $data["job"] = 'Шахтер';
-					if ($data["job"] === 'Woodcooter') $data["job"] = 'Лесоруб';
-					if ($data["job"] === 'Builder') $data["job"] = 'Строитель';
-					if ($data["job"] === 'Digger') $data["job"] = 'Дигер';
-					if ($data["job"] === 'Farmer') $data["job"] = 'Фермер';
-					if ($data["job"] === 'Hunter') $data["job"] = 'Охотник';
-					if ($data["job"] === 'Fisherman') $data["job"] = 'Рыбак';
-					if ($data["job"] === 'Weaponsmith') $data["job"] = 'Оружейник';
-					
-					$jobname = $data['job'];
-					$joblvl = $data["level"];
-					$jobexp = $data["experience"];
-				}
-			}
-		} else { $jobname = "nojob"; $joblvl = -1; $jobexp = -1; }
-		
-		$canUploadSkin 		= (int)$canUploadSkin;
-		$canUploadCloak		= (int)$canUploadCloak;
-		$canBuyVip	   		= (int)$canBuyVip;
-		$canBuyPremium 		= (int)$canBuyPremium;
-		$canBuyUnban   		= (int)$canBuyUnban;
-		$canActivateVaucher = (int)$canActivateVaucher;
-		$canExchangeMoney	= (int)$canExchangeMoney;
-	
-		if($canBuyUnban == 1) {
-		    $ty = 2;
-			$stmt = $db->prepare("SELECT name,type FROM $banlist WHERE name= :login and type<'$ty'");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$sql2 = $stmt->fetch(PDO::FETCH_ASSOC);
-			$query2 = $sql2['name'];
-			if(strcasecmp($query2, $login) == 0) $ugroup = "Banned";
-		}
-		
-		echo "$canUploadSkin$canUploadCloak$canBuyVip$canBuyPremium$canBuyUnban$canActivateVaucher$canExchangeMoney<:>$iconmoney<:>$realmoney<:>$cloakPrice<:>$vipPrice<:>$premiumPrice<:>$unbanPrice<:>$exchangeRate<:>$ugroup<:>$datetoexpire<:>$jobname<:>$joblvl<:>$jobexp";
-	} else
-//============================================Функции ЛК====================================//
-
-	if($action == 'activatekey') {
-		$key = $_POST['key'];
-		$stmt = $db->prepare("SELECT * FROM `sashok724_launcher_keys` WHERE `key` = :k"); 
-		$stmt->bindValue(':k', $key);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$amount = $row['amount'];
-		if($amount) {
-			$stmt = $db->prepare("UPDATE usersession SET realmoney = realmoney + $amount WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$stmt = $db->prepare("DELETE FROM `sashok724_launcher_keys` WHERE `key` = :k");
-			$stmt->bindValue(':k', $key);
-			$stmt->execute();	
-			$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);	
-			$money = $row['realmoney'];
-			echo "success:".$money;
-		} else echo "keyerr";
-	} else if($action == 'uploadskin') {
-		if(!is_uploaded_file($_FILES['ufile']['tmp_name'])) die("nofile");
-		$imageinfo = getimagesize($_FILES['ufile']['tmp_name']);
-		if($imageinfo['mime'] != 'image/png' || $imageinfo["0"] != '64' || $imageinfo["1"] != '32') die("skinerr");
-		$uploadfile = "".$uploaddirs."/".$login.".png";
-		if(move_uploaded_file($_FILES['ufile']['tmp_name'], $uploadfile)) echo "success";
-		else echo "fileerr";
-	} else if($action == 'uploadcloak') {
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$query = $row['realmoney']; if($query < $cloakPrice) die("moneyno");
-		if(!is_uploaded_file($_FILES['ufile']['tmp_name'])) die("nofile");
-		$imageinfo = getimagesize($_FILES['ufile']['tmp_name']);
-		$go = false;
-		if(($imageinfo['mime'] != 'image/png' || $imageinfo["0"] == '64' || $imageinfo["1"] == '32')){
-		$go = true;
-		} else echo 'cloakerr';
-		if($go) {
-		$uploadfile = "".$uploaddirp."/".$login.".png";
-		if(!move_uploaded_file($_FILES['ufile']['tmp_name'], $uploadfile)) die("fileerr");
-		$stmt = $db->prepare("UPDATE usersession SET realmoney = realmoney - $cloakPrice WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		echo "success:".$row['realmoney'];
-	}} else if($action == 'buyvip') {
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$query = $row['realmoney']; if($query < $vipPrice) die("moneyno");
-	    $stmt = $db->prepare("SELECT name,permission FROM permissions WHERE name= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$group = $row['permission'];
-		$pexdate = time() + 2678400;
-		if($group == 'group-vip-until') {	
-			$stmt = $db->prepare("UPDATE usersession SET realmoney=realmoney-$vipPrice WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$stmt = $db->prepare("UPDATE permissions SET value=value+2678400 WHERE name= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-		} else {
-			$stmt = $db->prepare("INSERT INTO permissions (id, name, type, permission, world, value) VALUES (NULL, :login, '1', 'group-vip-until', ' ', '$pexdate')");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();	
-			$stmt = $db->prepare("INSERT INTO permissions_inheritance (id, child, parent, type, world) VALUES (NULL, :login, 'vip', '1', NULL)");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$stmt = $db->prepare("UPDATE usersession SET realmoney=realmoney-$vipPrice WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-		}
-			$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			echo "success:".$row['realmoney'].":";
-			$stmt = $db->prepare("SELECT name,permission,value FROM permissions WHERE name= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			echo $row['value'];
-	} else if($action == 'buypremium') {
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$query = $row['realmoney']; if($query < $premiumPrice) die("moneyno");
-		$stmt = $db->prepare("SELECT name,permission FROM permissions WHERE name= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$group = $row['permission'];
-		$pexdate = time() + 2678400;
-		if($group == 'group-premium-until') {
-			$stmt = $db->prepare("UPDATE usersession SET realmoney=realmoney-$premiumPrice WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$stmt = $db->prepare("UPDATE permissions SET value=value+2678400 WHERE name= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-		} else {
-			$stmt = $db->prepare("INSERT INTO permissions (id, name, type, permission, world, value) VALUES (NULL, :login, '1', 'group-premium-until', ' ', '$pexdate')");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$stmt = $db->prepare("INSERT INTO permissions_inheritance (id, child, parent, type, world) VALUES (NULL, :login, 'premium', '1', NULL)");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$stmt = $db->prepare("UPDATE usersession SET realmoney=realmoney-$premiumPrice WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-		}
-			$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			echo "success:".$row['realmoney'].":";
-			$stmt = $db->prepare("SELECT name,permission,value FROM permissions WHERE name= :login");
-			$stmt->bindValue(':login', $login);
-			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			echo $row['value'];
-	} else if($action == 'buyunban') {
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$sql1 = $stmt->fetch(PDO::FETCH_ASSOC);
-		$query1 = $sql1['realmoney'];
-		$stmt = $db->prepare("SELECT name FROM $banlist WHERE name= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$sql2 = $stmt->fetch(PDO::FETCH_ASSOC);
-		$query2 = $sql2['name'];
-		if(strcasecmp($query2, $login) == 0) {
-			if($query1 >= $unbanPrice) {
-				if($canBuyVip || $canBuyPremium) {
-					$stmt = $db->prepare("SELECT name,permission,value FROM permissions WHERE name= :login");
-					$stmt->bindValue(':login', $login);
-					$stmt->execute();
-					$row = $stmt->fetch(PDO::FETCH_ASSOC);
-					$group = $row['permission'];
-					if(!$stmt) $ugroup = 'User'; else {
-						if($group == 'group-premium-until') $ugroup = 'Premium';
-						else if($group == 'group-vip-until') $ugroup = 'VIP';
-						else $ugroup = 'User';
-					}
-				} else $ugroup = 'User';
-					$stmt = $db->prepare("DELETE FROM $banlist WHERE name= :login");
-					$stmt->bindValue(':login', $login);
-					$stmt->execute();
-					$stmt = $db->prepare("UPDATE usersession SET realmoney=realmoney-$unbanPrice WHERE user= :login");
-					$stmt->bindValue(':login', $login);
-					$stmt->execute();
-					$stmt = $db->prepare("SELECT $db_columnUser,realmoney FROM usersession WHERE user= :login");
-					$stmt->bindValue(':login', $login);
-					$stmt->execute();
-					$row = $stmt->fetch(PDO::FETCH_ASSOC);
-				echo "success:".$row['realmoney'].":".$ugroup;
-			} else die('moneyno');
-		} else die("banno");
-	} else if($action == 'exchange') {
-		$wantbuy =$_POST ['buy'];
-		$gamemoneyadd = ($wantbuy * $exchangeRate);
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$query = $row['realmoney'];
-		if($wantbuy == '' || $wantbuy < 1) die("ecoerr");
-		if(!$iconregistered) die("econo");
-		if($query < $wantbuy) die("moneyno");
-		$stmt = $db->prepare("UPDATE iConomy SET balance = balance + $gamemoneyadd WHERE username= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$stmt = $db->prepare("UPDATE usersession SET realmoney = realmoney - :wantbuy WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->bindValue(':wantbuy', $wantbuy);
-		$stmt->execute();
-		$stmt = $db->prepare("SELECT user,realmoney FROM usersession WHERE user= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$money = $row['realmoney'];
-		$stmt = $db->prepare("SELECT username,balance FROM iConomy WHERE username= :login");
-		$stmt->bindValue(':login', $login);
-		$stmt->execute();
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		$iconmoney = $row['balance'];
-		echo "success:".$money.":".$iconmoney;
 	} else echo "Запрос составлен неверно";
 	
 	} catch(PDOException $pe) {

@@ -11,7 +11,7 @@
 			exit;
 		}
 
-		$stmt = $db->prepare("Select user From usersession Where user= :user And server= :serverid");
+		$stmt = $db->prepare("SELECT user FROM lnch_usersession WHERE user= :user AND server= :serverid");
 		$stmt->bindValue(':user', $user);
 		$stmt->bindValue(':serverid', $serverid);
 		$stmt->execute();   

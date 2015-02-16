@@ -12,7 +12,7 @@
 			exit(json_encode($bad));
 		}
 		
-		$stmt = $db->prepare("SELECT user,md5 FROM usersession WHERE user = :user and server = :serverid");
+		$stmt = $db->prepare("SELECT user,md5 FROM lnch_usersession WHERE user = :user and server = :serverid");
 		$stmt->bindValue(':user', $user);
 		$stmt->bindValue(':serverid', $serverid);
 		$stmt->execute();
